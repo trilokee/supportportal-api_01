@@ -1,0 +1,27 @@
+version: '3'
+services:
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: supportportal
+      MYSQL_ROOT_USER: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+  api:
+    image: openjdk:8-alpine
+    ports:
+      - 8082:8082
+    depends_on:
+      - db
+    command: java -jar /app/supportportal-api.jar
+    volumes:
+      - ./target:/app
+  ui:
+    image: supportportal-ui
+    ports:
+      - 4200:4200
+    depends_on:
+      - api 
+  
